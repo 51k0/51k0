@@ -8,6 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: unzip -q ShadowRunner.zip
+      - run: |
+          sed -i 's/fun draw(/fun drawGame(/; s/{ draw(c) }/{ drawGame(c) }/' ShadowRunner/app/src/main/java/com/example/shadowrunner/GameView.kt
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
