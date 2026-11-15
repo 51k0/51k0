@@ -1,1 +1,23 @@
-name: Build APK.
+name: Build APK
+on: push
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: unzip -q ShadowRunner.zip
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.9
+      - run: cd ShadowRunner && gradle assembleDebug --no-daemon
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp ShadowRunner/app/build/outputs/apk/debug/app-debug.apk .
+          gh release create "b${{ github.run_number }}" app-debug.apk
